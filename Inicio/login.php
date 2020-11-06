@@ -40,14 +40,14 @@
 	<body>
 
 		<h1> INTRODUCE TUS DATOS</h1>
-    	<form action="comprobarLogin.php" method="post">
+    	<form action="login_code.php" method="post">
 
 		<table>
 			<tr style="">
 				<td class="izq">Login:</td>
 				<td class="der"><input type="text" name="login"></td></tr>
 				<tr><td class="izq">Password:</td><td class="der"><input type="password" name="password"></td></tr>
-				<tr><td colspan="2"><input type="submit" name="enviar" value="LOGIN"></td>
+				<tr><td colspan="2"><input type="submit" name="Enviar" value="LOGIN"></td>
 			</tr>
 		</table>
 		</form>
@@ -59,4 +59,7 @@
 		</form>
 
 	</body>
+	<?php
+		include_once('../headFoot/footer.php');
+	?>
 </html>

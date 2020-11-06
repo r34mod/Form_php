@@ -3,7 +3,7 @@
     function controladorAplicacion(){
 
         $mensaje = '';
-        $dao = new PersonaDao(FIC_DATOS, RUTA_FOTOS);
+        $dao = new PersonaDao(RUTA_FOTOS);
 
         if(!isset($_POST['accion'])){
             $datos = $dao->leerTodo();
@@ -17,7 +17,7 @@
             case 'agregar':
                 $datos = $_POST;
                 $datos['foto']= $_FILES['foto'];
-                $dao->addUser($datos);
+                $dao->addUser($datosPers);
 
                 $datos = $dao->leerTodo();
 
@@ -30,7 +30,7 @@
                     $datos['foto'] = $_FILES['foto'];
                 }
     
-                $dao->modUser($datos);
+                $dao->modUser($datosPers);
                 $datos = $dao->readTodo();
                 $mensaje = 'Usuario modificado satisfactoriamente';
             break;
@@ -45,6 +45,54 @@
             default:
                 $datos = $dao->readAll();
         }
+ 
     }
+    /*
+    * Devuelve un mensaje de error según la lista de errores
+    */
+        function appError() {
+            return isset($_GET['error']) && isset(LST_ERRORES[$_GET['error']]) ? LST_ERRORES[$_GET['error']] : '';
+        }
+
+        /**
+         * Devuelve código para mostrar el usuario y botón de salir de la sesión
+         * 
+         * @return string code
+         */
+        function appUsuario() {
+
+
+            $mensaje = '';
+
+            $conn = mysqli_connect("localhost",'root','root',"datosUsuarios");
+
+                $sql = "SELECT usuario, contra FROM usr_pwd WHERE usuario='$nombre'
+                AND contra='$pwd_cifrada'";
+        
+                $resultado = mysqli_query($conn, $sql);
+
+                if(mysqli_num_rows($resultado) > 0){
+                    while($row = mysqli_fetch_array($resultado)){
+                        $usuario = $row["usuario"];
+                        $clave = $row["contra"];
+                        $_SESSION['usuario']=$usuario;
+
+                        $user = $_SESSION['usuario'] ?? '';
+                        if($user){
+                            $mensaje=<<<EOT
+                                Usuario: $user
+
+                                <form action="../Inicio/login.php">
+                                    <input type="submit" value="exit">
+                                </form>
+                            EOT;
+                        }
+                        return;
+                    }
+
+                }
+            
+            
+        }
 
 ?>

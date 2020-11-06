@@ -1,6 +1,10 @@
 <?php
 
-        sessionIn();
+        require_once('../Inicio/conexion.php');
+        require_once('../Inicio/session.php');
+        require_once('../funciones/controlador.php');
+        //sessionIn();
+        include_once('../headFoot/header.php');
 
 ?>
 
@@ -23,33 +27,44 @@
                 </tr>
             </thead>
             <?php
-                foreach($fichero as $indice => $datosPers){
-                    $numero = $indice + 1;
-                    $seleccion = <<< EOT
-                        <form action="" method="POST">
-                            <input type="hidden" name="accion" value="leer">
-                            <input type="hidden" name="registro" value="{$datosPers->getId()}">
-                            <input type="submit" name="enviar>
-                        </form>
-                    EOT;
+                $conn = mysqli_connect("localhost",'root','root',"datosUsuarios");
+                if(!$conn){
+                    echo "Conexion mal";
+                }else{
+                    $sql = "SELECT * FROM usuario";
+                    $result = mysqli_query($conn, $sql);
+
+                    if(!empty($result) AND mysqli_num_rows($result) > 0){
+                        while($row = mysqli_fetch_assoc($result)){ 
+                            echo "<tr><td". $row["id"] ."</td><td>". $row["nombre"] ."</td><td>". $row["fecha"]
+                             ."</td><td>". $row["sexo"] ."</td><td>";
+                             
+                            
+                             
+                            
+                        }
+                        echo "</table>";
+                    }else{
+                        echo "0 result";
+                    }
                     
-                    printf(
-                        '<tr><td>%s<tr><td>%s<tr><td>%s<tr><td>%s<tr><td>%s<tr><td>%s',
-                        $seleccion,
-                        $datosPers->getNombre(),
-                        formatDate($datosPers->getFecha()),
-                        $datosPers->getListaSexo(),
-                        $datosPers->getFoto() ? '<img src="'.RUTA_FOTO.'/'.$datosPers->getFoto().'">' : ''
-
-                    );
                 }
-
-            ?>
+                
+            
+                ?>
+            
         </table>
         <br><br>
-        <form action="" method="POST">
+        <form action="../AgregarDatos/agregarPersona.php" method="POST">
                 <input type="submit" value="agregar">
+        </form>
+        <form action="../AgregarDatos/modPers.php" method="POST">
+                <input type="submit" value="modificar">
         </form>
     </body>
 
+
+    <?php
+		include_once('../headFoot/footer.php');
+	?>
 </html>

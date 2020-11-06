@@ -1,7 +1,7 @@
 <?php 
 
     require_once('persona.php');
-
+    require_once('../Inicio/conexion.php');
 
     class PersonaDao{
         const coma = ',';
@@ -10,15 +10,10 @@
         private $foto;
 
 
-        function __construct($fichero, $foto){
+        function __construct($foto){
             $this->foto=$foto;
-
-            if(file_exists($fichero)){
-                $this->connect($fichero);
-            }else {
-                $this->connect($fichero);
-                $this->crearTabla();
-            }
+          
+           
         }
 
 
@@ -71,16 +66,19 @@
             $stmt->execute();
         }
 
-
+        
         function addUser($datosPers){
             $datosPers = $this->prepare($datosPers);
+
             $sql = 'INSERT INTO usuarios 
             (nombre, fecha, sexo, foto)
              VALUES (:nombre, :fecha, :sexo, :foto )';
 
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute($datosPers);
+           
         }
+    
 
 
         function modUser($datosPers){

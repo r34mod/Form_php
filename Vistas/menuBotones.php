@@ -1,6 +1,5 @@
 <?php
-
-    sessionIn();
+    
 
 ?>
 <!DOCTYPE html> 
@@ -13,12 +12,15 @@
         <h1>Inicio</h1>
 
         <form action="listaPersona.php">
-            <input type="submit" name="Personas">
+            <input type="submit" name="Personas" value="Persona">
         </form>
         <br><br>
-        <form action="listaDeportes.php">
-            <input type="submit" name="Deportes">
+        <form action="listaDeporte.php">
+            <input type="submit" name="Deportes" value="Deporte">
         </form>
 
     </body>
+    <?php
+		include_once('../headFoot/footer.php');
+	?>
 </html>

@@ -9,69 +9,42 @@
 function appController() {
     $mensaje = '';
 
-    $dao = new deporte(FIC_DATOS, DIR_FOTOS);
+    $dao = new DeporteDao();
 
     if (!isset($_POST['accion'])) {
-        $datos = $dao->readAll();
-        return [$mensaje, $datos];
+        $datosDep = $dao->readAll();
+        return [$mensaje, $datosDep];
     }
 
     switch ($_POST['accion']) {
-        case 'añadir':
-            $datos = $_POST;
-            $datos['foto'] = $_FILES['foto'];
+        case 'añadirDeporte':
+            $datosDep = $_POST;
+            
 
-            $dao->addDeporte($datos);
-            $datos = $dao->readTodoDeporte();
+            $dao->addDeporte($datosDep);
+            $datosDep = $dao->readTodoDeporte();
             $mensaje = 'Usuario añadido';
         break;
-        case 'modificar':
-            $datos = $_POST;
-            if ($_FILES['foto']['name']) {
-                $datos['foto'] = $_FILES['foto'];
-            }
+        case 'modificarDeporte':
+            $datosDep = $_POST;
+            
 
-            $dao->modDeporte($datos);
-            $datos = $dao->readAll();
+            $dao->modDeporte($datosDep);
+            $datosDep = $dao->readAll();
             $mensaje = 'Usuario modificado';
         break;
-        case 'eliminar':
+        case 'eliminarDeporte':
             $dao->delDeporte($_POST['registro']);
-            $datos = $dao->readAll();
+            $datosDep = $dao->readAll();
             $mensaje = 'Usuario eliminado';
         break;
-        case 'leer':
-            $datos = $dao->readDeporte($_POST['registro']);
+        case 'leerDeporte':
+            $datosDep = $dao->readDeporte($_POST['registro']);
         break;
         default:
-            $datos = $dao->readTodoDeporte();
+            $datosDep = $dao->readTodoDeporte();
     }
-    return [$mensaje, $datos];
+    return [$mensaje, $datosDep];
 }
 
 
-/**
- * Devuelve un mensaje de error según la lista de errores
- */
-function appError() {
-    return isset($_GET['error']) && isset(LST_ERRORES[$_GET['error']]) ? LST_ERRORES[$_GET['error']] : '';
-}
-
-/**
- * Devuelve código para mostrar el usuario y botón de salir de la sesión
- * 
- * @return string code
- */
-function appUser() {
-    $mensaje = '';
-    $usuario = $_SESSION['usuario'] ?? '';
-    if ($usuario) {
-        $mensaje =<<< EOT
-            Usuario: $usuario
-            <form action="login.php">
-                <input type="submit" value="salir">
-            </form>
-EOT;
-    }
-    return $mensaje;
-}

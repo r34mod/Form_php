@@ -5,7 +5,7 @@
 
 
         function __construct(){
-            
+            $this->crearTablaUD();
         }
 
         private function connect(){
@@ -36,7 +36,7 @@
             FOREIGN KEY
         */
 
-        private function crearTabla(){
+        private function crearTablaUD(){
             $sql = 'CREATE TABLA user_deporte(
                 id_user INTEGER NOT NULL,
                 id_deporte INTEGER NOT NULL,

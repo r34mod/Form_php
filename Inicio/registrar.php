@@ -30,7 +30,7 @@
     <body>
     <h1>REGÍSTRATE</h1>
     
-        <form action="registrarDatos.php" method="post">
+        <form action="registration_code.php" method="post">
         <table><tr>
           <td>
                   Usuario</td><td><input type="text" name="usu" id="usu"></td></tr>
@@ -42,5 +42,9 @@
         </form>
     
     </body>
+
+    <?php
+		include_once('../headFoot/footer.php');
+	?>
     
 </html>

@@ -8,13 +8,9 @@ class DeporteDao{
 
     private $pdo;
     
-    function __construct($fichero){
-        if(file_exists($fichero)){
-            $this->connect($fichero);
-        }else {
-            $this->connect($fichero);
-            $this->crearTablaDeporte();
-        }
+    function __construct(){
+            
+        
     }
 
 
@@ -25,20 +21,27 @@ class DeporteDao{
         $dbname = 'datosUsuarios'; //nombre de la base de datos
         $charset='utf8mb4';
 
-        $dsn = "mysql:host=$host;dbname=$dbname;charset=$charset";
+        //$dsn = "mysql:host=$host;dbname=$dbname;charset=$charset";
     
         try{
-            $dsn = 'sqlite:'.$fichero;
-            $this->pdo=new PDO($dsn);
-            $this->pdo->setAttribute(PDO::ATTR_ERRMODE);
+            $dsn = "mysql:host=$host;dbname=$dbname;charset=$charset";
+            $options = [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                ];
+            try {
+                $pdo = new PDO($dsn, $dbUsername, $dbPassword, $options);
+            } catch (\PDOException $e) {
+                echo $e->getMessage(); // En producción, se debería redirigir a una
+            } // página de error
         }catch(\PDOException $e){
-            $e.getMessage();
+            echo $e->getMessage();
         }
     }
 
 
 
-    private function crearTablaDeporte(){
+     function crearTablaDeporte(){
         $sql = 'CREATE TABLA deporte (
             id_deporte INTEGER PRIMARY KEY AUTOINCREMENT,
             deporte TEXT
@@ -52,7 +55,7 @@ class DeporteDao{
 
     private function prepare($datosDep){
         if(isset($datosDep['registro'])){
-            $a['id']=$datosDep['registro'];
+            $a['id_deporte']=$datosDep['registro'];
         }
         
         $a['deporte']=isset($datosDep['deporte']) ? implode(DeporteDao::coma, $datosDep['deporte']) : '';
@@ -67,8 +70,8 @@ class DeporteDao{
 
     function addDeporte($datosDep){
         $datosDep = $this->prepare($datosDep);
-        $sql = 'INSERT INTO deportes 
-        (deporte)
+        $sql = 'INSERT INTO sport 
+        (id_deporte, deporte)
          VALUES (:deporte)';
 
         $stmt = $this->pdo->prepare($sql);
@@ -80,9 +83,9 @@ class DeporteDao{
         $datosDep = $this->prepare($datosDep);
 
 
-        $sql = 'UPDATE deporte SET 
+        $sql = 'UPDATE sport SET 
                deporte = :deporte
-            WHERE id=:id';
+            WHERE id_deporte=:id_deporte';
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($datosDep);
@@ -90,14 +93,14 @@ class DeporteDao{
 
 
     function delDeporte($id) {
-        $sql = 'DELETE FROM deporte WHERE id = :id';
+        $sql = 'DELETE FROM sport WHERE id_deporte = :id_deporte';
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['id' => $id]);
     }
 
     function leerTodoDeporte(){
         $todo = [];
-        $sql = 'SELECT id, deporte FROM deporte ORDER BY id';
+        $sql = 'SELECT id_deporte, deporte FROM sport ORDER BY id_deporte';
 
         $stmt = $this->pdo->query($sql);
         while($datosDep = $stmt->fetch()){
@@ -109,9 +112,9 @@ class DeporteDao{
 
 
     function readDepoorte($id) {
-        $sql = 'SELECT id, deporte
-                FROM deporte
-                WHERE id = :id';
+        $sql = 'SELECT id_deporte, deporte
+                FROM sport
+                WHERE id_deporte = :id_deporte';
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['id' => $id]);
         $datosDep = $stmt->fetch();
@@ -121,7 +124,7 @@ class DeporteDao{
 
     function convertirDatosDeporte($datosDep){
         $registrarDeporte = new Deporte(
-            $datosDep['id'],
+            $datosDep['id_deporte'],
             explode(DeporteDao::coma, $datosDep['deporte'])
         );
 
